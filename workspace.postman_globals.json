@@ -1,0 +1,61 @@
+{
+	"id": "3ddaedb2-6e5a-4450-87a1-4b6e3edc6e0f",
+	"values": [
+		{
+			"key": "Content-Type",
+			"value": "application/json",
+			"enabled": true
+		},
+		{
+			"key": "Accept",
+			"value": "*/*",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "Accept-Encoding",
+			"value": "gzip, deflate, br",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "Connection",
+			"value": "keep-alive",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "limit",
+			"value": "10",
+			"enabled": true
+		},
+		{
+			"key": "size",
+			"value": "30",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "key",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "hair",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "hair.color",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2023-10-21T09:03:29.816Z",
+	"_postman_exported_using": "Postman/10.12.11"
+}

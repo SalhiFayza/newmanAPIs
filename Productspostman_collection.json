@@ -1,0 +1,567 @@
+{
+	"info": {
+		"_postman_id": "258b36e0-750c-4296-9649-10c43fcdfa35",
+		"name": "2.Products",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "22454838"
+	},
+	"item": [
+		{
+			"name": "Get all products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);",
+							"});",
+							"pm.test(\"Status code name has OK\", function () {",
+							"    pm.response.to.have.status(\"OK\");",
+							"});",
+							"pm.test(\"Response body has a product iPhone 9\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"iPhone 9\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "{{Connection}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "{{Accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "{{Accept-Encoding}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": "{{BaseURL}}{{EndPoint}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Get a single product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify the ID\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "{{Connection}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "{{Accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "{{Accept-Encoding}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{BaseURL}}{{EndPoint}}/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Search products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Date is present\", function () {",
+							"    pm.response.to.have.header(\"date\");",
+							"   ",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "{{Connection}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "{{Accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "{{Accept-Encoding}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BaseURL}}{{EndPoint}}/search?q=phone",
+					"host": [
+						"{{BaseURL}}{{EndPoint}}"
+					],
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "phone"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Limit and skip products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify that the limit is 30\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.limit).to.eql(pm.globals.get(\"limit\"));",
+							"    //console.log(typeof pm.globals.get(\"limit\"));",
+							"    //console.info(pm.globals.get(\"limit\"));",
+							"});",
+							"pm.test(\"Verify that the total is 100\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total).to.eql(100);",
+							"});",
+							"pm.test(\"verify the title of second product is Brown Perfume\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.products[1].title).to.eql(\"Brown Perfume\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.clear();",
+							"",
+							"console.info(pm.globals.get(\"size\"));",
+							"",
+							"console.log(typeof pm.globals.get(\"size\"));",
+							"",
+							"console.info(pm.globals.get(\"limit\"));",
+							"",
+							"pm.globals.set(\"limit\",parseInt(pm.globals.get(\"size\")));",
+							"",
+							"console.log(typeof pm.globals.get(\"limit\"));",
+							"",
+							"console.info(pm.globals.get(\"limit\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "{{Connection}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "{{Accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "{{Accept-Encoding}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BaseURL}}{{EndPoint}}?limit={{limit}}&skip=10&select=title,price",
+					"host": [
+						"{{BaseURL}}{{EndPoint}}"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "{{limit}}"
+						},
+						{
+							"key": "skip",
+							"value": "10"
+						},
+						{
+							"key": "select",
+							"value": "title,price"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all products categories",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "{{Connection}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "{{Accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "{{Accept-Encoding}}",
+						"type": "text"
+					}
+				],
+				"url": "{{BaseURL}}{{EndPoint}}/categories"
+			},
+			"response": []
+		},
+		{
+			"name": "Get products of a category",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "{{Connection}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "{{Accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "{{Accept-Encoding}}",
+						"type": "text"
+					}
+				],
+				"url": "{{BaseURL}}{{EndPoint}}/category/smartphones"
+			},
+			"response": []
+		},
+		{
+			"name": "Add a new product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "{{Content-Type}}",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "{{Connection}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "{{Accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "{{Accept-Encoding}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"BMW Pencil\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{BaseURL}}{{EndPoint}}/add"
+			},
+			"response": []
+		},
+		{
+			"name": "Update a product",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "{{Content-Type}}",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "{{Connection}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "{{Accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "{{Accept-Encoding}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"iPhone Galaxy +1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{BaseURL}}{{EndPoint}}/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a product",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "{{Connection}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "{{Accept}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "{{Accept-Encoding}}",
+						"type": "text"
+					}
+				],
+				"url": "{{BaseURL}}{{EndPoint}}/1"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.clear();",
+					"",
+					"//pm.globals.unset(\"Connection\");",
+					"",
+					"pm.globals.set(\"Connection\", \"keep-alive\");",
+					"",
+					"//console.info(\"Connection\");"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"pm.test(\"Response time is less than 500ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(500);",
+					"});",
+					"pm.test(\"Content-Type is present\", function () {",
+					"    pm.response.to.have.header(\"Content-Type\");",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "EndPoint",
+			"value": "/products"
+		}
+	]
+}
