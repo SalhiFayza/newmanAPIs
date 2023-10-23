@@ -23,7 +23,7 @@ jobs:
    
       # Runs a single command using the runners shell
       - name: Run newman
-        run: newman run Productspostman_collection.json -e EnvironmentDev.postman_environment.json -g workspace.postman_globals.json -n 5 -r htmlextra
+        run: newman run Products.postman_collection.json -e EnvironmentDev.postman_environment.json -g workspace.postman_globals.json -n 5 -r htmlextra
       - uses: actions/upload-artifact@v3
         with:
           name: my-artifact
