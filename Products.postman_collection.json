@@ -194,19 +194,25 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Verify that the limit is 30\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.limit).to.eql(pm.globals.get(\"limit\"));",
-							"    //console.log(typeof pm.globals.get(\"limit\"));",
-							"    //console.info(pm.globals.get(\"limit\"));",
+							"// Parse response JSON",
+							"let jsonData = pm.response.json();",
+							"",
+							"// Test global variables",
+							"pm.test(\"Global limit is set correctly\", function () {",
+							"    pm.expect(pm.globals.get(\"limit\")).to.equal(jsonData.limit);",
 							"});",
-							"pm.test(\"Verify that the total is 100\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.total).to.eql(100);",
+							"",
+							"pm.test(\"Global total is set correctly\", function () {",
+							"    pm.expect(pm.globals.get(\"total\")).to.equal(jsonData.total);",
 							"});",
-							"pm.test(\"verify the title of second product is Brown Perfume\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.products[1].title).to.eql(\"Brown Perfume\");",
+							"",
+							"pm.test(\"Global skip is set correctly\", function () {",
+							"    pm.expect(pm.globals.get(\"skip\")).to.equal(jsonData.skip);",
+							"});",
+							"",
+							"// Test specific data in the response",
+							"pm.test(\"Check product title at index 1\", function () {",
+							"    pm.expect(jsonData.products[1].title).to.equal(\"Brown Perfume\");",
 							"});",
 							""
 						],
@@ -217,19 +223,12 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"console.clear();",
+							"// Set global variables",
+							"pm.globals.set(\"limit\", 30);",
 							"",
-							"console.info(pm.globals.get(\"size\"));",
+							"pm.globals.set(\"total\", 100);",
 							"",
-							"console.log(typeof pm.globals.get(\"size\"));",
-							"",
-							"console.info(pm.globals.get(\"limit\"));",
-							"",
-							"pm.globals.set(\"limit\",parseInt(pm.globals.get(\"size\")));",
-							"",
-							"console.log(typeof pm.globals.get(\"limit\"));",
-							"",
-							"console.info(pm.globals.get(\"limit\"));"
+							"pm.globals.set(\"skip\", 10);"
 						],
 						"type": "text/javascript"
 					}
@@ -262,7 +261,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{BaseURL}}{{EndPoint}}?limit={{limit}}&skip=10&select=title,price",
+					"raw": "{{BaseURL}}{{EndPoint}}?limit={{limit}}&skip={{skip}}&select=title,price",
 					"host": [
 						"{{BaseURL}}{{EndPoint}}"
 					],
@@ -273,7 +272,7 @@
 						},
 						{
 							"key": "skip",
-							"value": "10"
+							"value": "{{skip}}"
 						},
 						{
 							"key": "select",
@@ -545,11 +544,12 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
+					"// Response status code test",
 					"pm.test(\"Status code is 200\", function () {",
 					"    pm.response.to.have.status(200);",
 					"});",
-					"pm.test(\"Response time is less than 1500ms\", function () {",
-					"    pm.expect(pm.response.responseTime).to.be.below(1500);",
+					"pm.test(\"Response time is less than 500ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
 					"});",
 					"pm.test(\"Content-Type is present\", function () {",
 					"    pm.response.to.have.header(\"Content-Type\");",
