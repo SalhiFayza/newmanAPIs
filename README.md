@@ -1,6 +1,6 @@
 # newmanAPIs ⚔️
 
-![How](https://github.com/SalhiFayza/newmanAPIs/assets/60444937/6ae84cf8-a707-437a-aa5e-43aa9129f200)
+[How.pdf](https://github.com/SalhiFayza/newmanAPIs/files/13170366/How.pdf)
 
 # Show details 📑:
 
