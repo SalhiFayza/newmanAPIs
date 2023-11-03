@@ -5,7 +5,7 @@
 
 # Show details 📑:
 
-[How.pdf](https://github.com/SalhiFayza/newmanAPIs/files/13170301/How.pdf)
+[HOW DO YOU EXECUTE A COLLECTION ON POSTMAN, NEWMAN, GITHUB ACTIONS, AND JENKINS?.pdf](https://github.com/SalhiFayza/newmanAPIs/files/13170301/How.pdf)
 
 # Black.yaml
 
