@@ -17,7 +17,7 @@ jobs:
           echo "<html><body><h1>Test Report</h1><p>This is a test report.</p></body></html>" > output/report.html
 
       - name: Upload HTML report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: html-report  # Artifact name
           path: output/report.html  # Path to your HTML report
@@ -34,7 +34,7 @@ jobs:
           echo "URL: $ARTIFACT_URL" >> $GITHUB_ENV
 
       - name: Create Issue Comment with Artifact URL
-        uses: peter-evans/create-issue-comment@v3
+        uses: peter-evans/create-issue-comment@v4
         with:
           issue-number: 1  # Change this to the issue number where you want to comment
           body: |
