@@ -1,7 +1,7 @@
-name: Newman
+name: Upload and Notify Artifact URL
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Allows you to manually trigger the workflow
 
 jobs:
   build:
@@ -11,33 +11,32 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Newman and HTML Extra reporter
+      - name: Create a sample report
         run: |
-          npm install -g newman
-          npm install -g newman-reporter-htmlextra
+          mkdir -p output
+          echo "<html><body><h1>Test Report</h1><p>This is a test report.</p></body></html>" > output/report.html
 
-      - name: Create newman results directory
-        run: mkdir -p newman
+      - name: Upload HTML report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-report  # Artifact name
+          path: output/report.html  # Path to your HTML report
 
-      - name: Run Newman tests
+  send_notification:
+    runs-on: ubuntu-latest
+    needs: build  # Make sure this job runs after the build job
+
+    steps:
+      - name: Get Artifact URL
         run: |
-          newman run Products.postman_collection.json \
-            -e EnvironmentDev.postman_environment.json \
-            -g workspace.postman_globals.json \
-            -n 5 \
-            -r htmlextra,junit \
-            --reporter-htmlextra-export newman/report.html \
-            --reporter-junit-export newman/results.xml
-        continue-on-error: true
+          ARTIFACT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "Artifact URL: $ARTIFACT_URL"
+          echo "URL: $ARTIFACT_URL" >> $GITHUB_ENV
 
-      - name: Upload HTML report
-        uses: actions/upload-artifact@v4
+      - name: Create Issue Comment with Artifact URL
+        uses: peter-evans/create-issue-comment@v3
         with:
-          name: html-report
-          path: newman/report.html
-
-      - name: Upload JUnit results
-        uses: actions/upload-artifact@v4
-        with:
-          name: junit-results
-          path: newman/results.xml
+          issue-number: 1  # Change this to the issue number where you want to comment
+          body: |
+            Please find the artifact URL for the report:
+            ${{ env.ARTIFACT_URL }}
