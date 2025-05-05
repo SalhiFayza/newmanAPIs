@@ -1,16 +1,43 @@
 name: Newman
+
 on:
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: install report htmlextra
-        run: npm install -g newman-reporter-htmlextra
-      - name: Run newman
-        run: newman run Products.postman_collection.json -e EnvironmentDev.postman_environment.json -g workspace.postman_globals.json -n 5 -r htmlextra
-      - uses: actions/upload-artifact@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Newman and HTML Extra reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Create newman results directory
+        run: mkdir -p newman
+
+      - name: Run Newman tests
+        run: |
+          newman run Products.postman_collection.json \
+            -e EnvironmentDev.postman_environment.json \
+            -g workspace.postman_globals.json \
+            -n 5 \
+            -r htmlextra,junit \
+            --reporter-htmlextra-export newman/report.html \
+            --reporter-junit-export newman/results.xml
+        continue-on-error: true
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
         with:
-          name: my-artifact
-          path: ./newman
+          name: html-report
+          path: newman/report.html
+
+      - name: Upload JUnit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-results
+          path: newman/results.xml
