@@ -1,42 +1,31 @@
-name: Upload and Notify Artifact URL
+name: Newman
 
 on:
-  workflow_dispatch:  # Allows you to manually trigger the workflow
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Create a sample report
+      - name: Install newman and htmlextra reporter
         run: |
-          mkdir -p output
-          echo "<html><body><h1>Test Report</h1><p>This is a test report.</p></body></html>" > output/report.html
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
 
-      - name: Upload HTML report as artifact
+      - name: Run newman tests
+        run: |
+          newman run Products.postman_collection.json \
+            -e EnvironmentDev.postman_environment.json \
+            -g workspace.postman_globals.json \
+            -n 5 \
+            -r htmlextra \
+            --reporter-htmlextra-export ./newman/report.html
+
+      - name: Upload newman report
         uses: actions/upload-artifact@v4
         with:
-          name: html-report  # Artifact name
-          path: output/report.html  # Path to your HTML report
-
-  send_notification:
-    runs-on: ubuntu-latest
-    needs: build  # Make sure this job runs after the build job
-
-    steps:
-      - name: Get Artifact URL
-        run: |
-          ARTIFACT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          echo "Artifact URL: $ARTIFACT_URL"
-          echo "URL: $ARTIFACT_URL" >> $GITHUB_ENV
-
-      - name: Create Issue Comment with Artifact URL
-        uses: peter-evans/create-issue-comment@v2
-        with:
-          issue-number: 1  # Change this to the issue number where you want to comment
-          body: |
-            Please find the artifact URL for the report:
-            ${{ env.ARTIFACT_URL }}
+          name: newman-report
+          path: ./newman
