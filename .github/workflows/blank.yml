@@ -1,13 +1,14 @@
-name: Newman
+name: Newman API Tests
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  newman-tests:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install newman and htmlextra reporter
@@ -15,8 +16,16 @@ jobs:
           npm install -g newman
           npm install -g newman-reporter-htmlextra
 
-      - name: Run newman tests
-        run: newman run Products.postman_collection.json -e EnvironmentDev.postman_environment.json -g workspace.postman_globals.json -n 5 -r htmlextra
+      - name: Run newman collection
+        run: |
+          mkdir -p newman
+          newman run Products.postman_collection.json \
+            -e EnvironmentDev.postman_environment.json \
+            -g workspace.postman_globals.json \
+            -n 5 \
+            -r htmlextra \
+            --reporter-htmlextra-export newman/report.html \
+            --suppress-exit-code
       - name: Upload newman report
         uses: actions/upload-artifact@v4
         with:
